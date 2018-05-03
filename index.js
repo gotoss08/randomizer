@@ -20,6 +20,10 @@ app.get('/', (req, res) => {
     return res.sendFile('index.html');
 });
 
+const resetRandomizedItems = function resetRandomizedItems() {
+    items.forEach((item) => item.randomized = false);
+};
+
 let items = [];
 
 io.on('connection', (socket) => {
@@ -32,24 +36,28 @@ io.on('connection', (socket) => {
     });
 
     socket.on('add', (text) => {
+        resetRandomizedItems();
         const item = {
             id: uniqid(),
             text,
+            randomized: false,
         };
         items.push(item);
         io.emit('update', items);
     });
 
     socket.on('remove', (id) => {
+        resetRandomizedItems();
         items = items.filter((item) => item.id != id);
         io.emit('update', items);
     });
 
     socket.on('randomize', () => {
+        resetRandomizedItems();
         const randomIndex = Math.round(Math.random() * (items.length - 1));
         if (!items[randomIndex]) return;
-        let id = items[randomIndex].id;
-        io.emit('randomize', id);
+        items[randomIndex].randomized = true;
+        io.emit('update', items);
     });
 });
 

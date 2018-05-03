@@ -20,7 +20,7 @@ const sendRandomizeRequest = function sendRandomizeItemsRequest() {
     socket.emit('randomize');
 };
 
-const addNewItem = function addNewItem(text, id) {
+const addNewItem = function addNewItem(id, text) {
     let item = itemTemplate.clone();
     item.attr('id', id);
     item.find('.item-text').text(text);
@@ -37,7 +37,7 @@ const removeItem = function removeItem(id) {
     items.children().removeClass('result result-other');
 };
 
-const randomize = function randomize(id) {
+const updateRandomizedItem = function updateRandomizedItem(id) {
     items.children().removeClass('result').addClass('result-other');
     let randomItem = $(`#${id}`);
     setTimeout(() => {
@@ -58,9 +58,9 @@ randomizeButton.click(() => {
 
 socket.on('update', (_items) => {
     items.empty();
-    _items.forEach((item) => {
-        addNewItem(item.text, item.id);
-    });
-});
+    _items.forEach((item) => addNewItem(item.id, item.text));
 
-socket.on('randomize', (id) => randomize(id));
+    let randomizedItem = _items.find((item) => item.randomized);
+    if (!randomizedItem) return;
+    updateRandomizedItem(randomizedItem.id);
+});
