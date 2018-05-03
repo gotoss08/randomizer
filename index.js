@@ -47,6 +47,7 @@ io.on('connection', (socket) => {
 
     socket.on('randomize', () => {
         const randomIndex = Math.round(Math.random() * (items.length - 1));
+        if (!items[randomIndex]) return;
         let id = items[randomIndex].id;
         io.emit('randomize', id);
     });
