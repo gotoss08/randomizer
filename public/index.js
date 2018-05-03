@@ -40,7 +40,9 @@ const removeItem = function removeItem(id) {
 const randomize = function randomize(id) {
     items.children().removeClass('result').addClass('result-other');
     let randomItem = $(`#${id}`);
-    randomItem.removeClass('result-other').addClass('result');
+    setTimeout(() => {
+        randomItem.removeClass('result-other').addClass('result');
+    }, 150);
 };
 
 button.click(() => sendAddItemRequest());
