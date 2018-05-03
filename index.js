@@ -25,6 +25,8 @@ let items = [];
 io.on('connection', (socket) => {
     console.log('Socket connected');
 
+    socket.emit('update', items);
+
     socket.on('disconnect', () => {
         console.log('Socket disconnected');
     });
